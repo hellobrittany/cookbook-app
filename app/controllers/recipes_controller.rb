@@ -6,8 +6,11 @@ class RecipesController < ApplicationController
 	end
 
 	def index
-		@recipes = Recipe.all
-		
+		@recipes = Recipe.all.order(:prep_time)
+		sort_attribute = params[:sort]
+		if sort_attribute
+			@recipes = Recipe.all.order(sort_attribute)
+		end	
 	end
 
 	def show
