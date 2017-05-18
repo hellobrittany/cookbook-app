@@ -6,6 +6,14 @@ class RecipesController < ApplicationController
 	end
 
 	def index
+		if session[:count] == nil
+			session[:count] = 0
+		end
+		
+		session[:count]	+= 1
+		@visit_count = session[:count]
+
+
 		@recipes = Recipe.all.order(:prep_time)
 		sort_attribute = params[:sort]
 		if sort_attribute
@@ -25,9 +33,10 @@ class RecipesController < ApplicationController
 	def create
 		recipe = Recipe.new(
 												title: params[:title], 
-												chef: params[:chef], 
+												prep_time: params[:prep_time], 
 												ingredients: params[:ingredients], 
-												directions: params[:directions] 
+												directions: params[:directions], 
+												user_id: current_user.id
 												)
 		recipe.save
 		flash[:success] = "Recipe successfully created"
@@ -42,7 +51,7 @@ class RecipesController < ApplicationController
 		recipe = Recipe.find(params[:id])
 		recipe.assign_attributes(
 															title: params[:title], 
-															chef: params[:chef], 
+															prep_time: params[:prep_time], 
 															ingredients: params[:ingredients], 
 															directions: params[:directions])
 		recipe.save
